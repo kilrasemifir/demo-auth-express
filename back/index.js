@@ -19,7 +19,7 @@ app.post("/register", (req, res)=>{
     else if (!dto.password){
         res.send("Vous devez donner un mot de passe").status(400);
     }
-    else if (users.any(usr=>usr.username === dto.username)){
+    else if (users.some(usr=>usr.username === dto.username)){
         res.send("Un utilisateur possede deja ce username").status(400);
     }
     else {
@@ -29,6 +29,20 @@ app.post("/register", (req, res)=>{
         });
         console.log(users);
         res.send("OK")
+    }
+});
+
+app.get("/basic-auth", (req, res)=>{
+    const authorization = req.headers["authorization"].substring(6);
+    const pair = Buffer.from(authorization, 'base64').toString('utf-8')
+    console.log(pair);
+    let [username, password] = pair.split(":")
+    const hashPassword = hash(password) 
+    if (users.some(user=>user.username === username && user.password === hashPassword)){
+        res.send("OK")
+    }
+    else {
+        res.send("Erreur").status(403)
     }
 })
 
