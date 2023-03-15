@@ -6,7 +6,7 @@ Demonstration de la mise en place d'une connexion avec Basic-Auth et Bearer-Auth
  * Ce n'est pas un framework mais une librairie qui permet de créer un server HTTP.
  */
 const express = require('express');
-const demo = require('./produits.controller');
+
 
 /**
  * PORT sur lequel le server HTTP va écouter.
@@ -14,6 +14,9 @@ const demo = require('./produits.controller');
 const PORT = 8000;
 
 const app = express();
+const keycloak = require('./keycloak.config').initKeycloak(app);
+const demo = require('./produits.controller');
+app.use(keycloak.middleware());
 
 /**
  * Utilisation d'un middleware pour parser le body des requêtes.
